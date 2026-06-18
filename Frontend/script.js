@@ -1,4 +1,4 @@
-const API = '/api';
+const API = 'http://localhost:5001/api';
 
 // ── State ──────────────────────────────────────────────────
 let currentUser = JSON.parse(localStorage.getItem('cc_user') || 'null');

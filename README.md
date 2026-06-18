@@ -94,5 +94,5 @@ CertiChain addresses these problems by providing a secure, fast, and automated v
 4. Public API for third-party verification
 
 ## Contact
-Email: tyv912005@gmail.com
-GitHub: https://github.com/theyashvermaa
+Email: srivastavatarang111@gmail.com
+GitHub: https://github.com/Tarangsrivas2

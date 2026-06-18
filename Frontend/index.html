@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CertiChain – Verifiable Digital Certificates</title>
+  <link rel="icon" type="image/png" href="./Assets/CertiChainLogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Playfair+Display:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#home" onclick="go('home')">
+      <img class="logo-img" src="./Assets/CertiChainLogo.png" alt="CertiChain Logo">
+      CertiChain
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="javascript:void(0)" onclick="go('home')" class="nav-link">Home</a>
+      <span id="navGuest">
+        <a href="javascript:void(0)" onclick="go('login')" class="nav-link">Login</a>
+        <a href="javascript:void(0)" onclick="go('register')" class="nav-link nav-btn">Register</a>
+      </span>
+      <span id="navAuth" class="hidden">
+        <a href="javascript:void(0)" onclick="go('dashboard')" class="nav-link">Dashboard</a>
+        <a href="javascript:void(0)" onclick="go('generate')" class="nav-link" id="navGenerate">Generate</a>
+        <a href="javascript:void(0)" onclick="go('verify')" class="nav-link">Verify</a>
+        <a href="javascript:void(0)" onclick="go('profile')" class="nav-link" id="navProfile"> Profile</a>
+        <a href="#" onclick="logout()" class="nav-link nav-btn-danger">Logout</a>
+      </span>
+      <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-toggle" title="Toggle Theme">🌓</button>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="section active">
+    <div class="hero">
+      <div class="hero-logo-top">
+        <img src="./Assets/CertiChainLogo.png" alt="CertiChain Logo" class="hero-logo">
+      </div>
+      <h1 class="hero-title">Certi<span class="accent">Chain</span></h1>
+      <p class="hero-sub">Secure Platform To Generate And Verify Digital Certificates Using Unique IDs, QR Codes, And
+        Tamper Detection.</p>
+      <div class="hero-cta">
+        <button id="heroStartBtn" class="btn btn-primary" onclick="go('register')">Get Started →</button>
+        <button class="btn btn-outline" onclick="go('verify')">Verify a Certificate</button>
+      </div>
+      <div class="hero-stat-row">
+        <div class="stat-chip"> SHA-256 Hash</div>
+        <div class="stat-chip"> QR Verified</div>
+        <div class="stat-chip"> Tamper-Proof</div>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔏</div>
+        <h3>Secure Certificates</h3>
+        <p>Every certificate gets a unique ID + SHA-256 hash. Any tampering is immediately detected on verification.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📷</div>
+        <h3>QR Code Verification</h3>
+        <p>Scan the QR code on any certificate to instantly verify its authenticity without typing a single character.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👤</div>
+        <h3>Role-Based Access</h3>
+        <p>Admins issue certificates with their organization name. Users can verify. Clear separation of permissions.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Bulk Generation</h3>
+        <p>Upload a CSV, Excel, or PDF with participant names. Generate hundreds of unique certificates in one click.
+        </p>
+      </div>
+    </div>
+    <div class="how-it-works">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step"><span class="step-num">01</span>
+          <p>Admin registers & issues certificate</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step"><span class="step-num">02</span>
+          <p>System generates unique ID + hash + QR</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step"><span class="step-num">03</span>
+          <p>Anyone scans QR or enters ID to verify</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register" class="section">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-header">
+          <span class="auth-logo">
+            <img src="./Assets/CertiChainLogo.png" alt="CertiChain Logo" class="hero-logo">
+          </span>
+          <h2>Create Account</h2>
+          <p>Join CertiChain to get started</p>
+        </div>
+        <div id="registerError" class="alert alert-error hidden"></div>
+        <div id="registerSuccess" class="alert alert-success hidden"></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Alice Johnson" />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="alice@example.com" />
+        </div>
+        <!-- FEATURE 1: Password show/hide -->
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="regPassword" placeholder="Min. 6 characters" />
+            <button type="button" class="pw-toggle" onclick="togglePassword('regPassword', this)"
+              tabindex="-1"></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="regRole" onchange="toggleOrgField()">
+            <option value="user">User (Verify Only)</option>
+            <option value="admin">Admin (Issue + Verify)</option>
+          </select>
+        </div>
+        <div class="form-group hidden" id="orgGroup">
+          <label>Organization Name</label>
+          <input type="text" id="regOrg" placeholder="Acme University" />
+        </div>
+        <button class="btn btn-primary btn-full" onclick="register()">Create Account</button>
+        <!-- In register section -->
+        <p class="auth-switch">Already have an account? <a href="javascript:void(0)" onclick="go('login')">Login</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login" class="section">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-header">
+          <span class="auth-logo">
+            <img src="./Assets/CertiChainLogo.png" alt="CertiChain Logo" class="hero-logo">
+          </span>
+          <h2>Welcome Back</h2>
+          <p>Sign in to your account</p>
+        </div>
+        <div id="loginError" class="alert alert-error hidden"></div>
+        <div id="loginSuccess" class="alert alert-success hidden"></div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" placeholder="alice@example.com" />
+        </div>
+        <!-- FEATURE 1: Password show/hide -->
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="loginPassword" placeholder="Your password" />
+            <button type="button" class="pw-toggle" onclick="togglePassword('loginPassword', this)"
+              tabindex="-1"></button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="login()">Sign In</button>
+        <p class="auth-switch">Don't have an account? <a href="javascript:void(0)" onclick="go('register')">Register</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="section">
+    <div class="container">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <p id="dashWelcome">Welcome back!</p>
+      </div>
+      <div class="dash-stats" id="dashStats"></div>
+      <div id="dashAdminActions" class="dash-actions hidden">
+        <button class="btn btn-primary" onclick="go('generate')"> Generate Certificate</button>
+        <button class="btn btn-outline" onclick="go('verify')"> Verify Certificate</button>
+      </div>
+      <!-- FEATURE 4: Upgrade to admin banner for users -->
+      <div id="dashUpgradeBanner" class="upgrade-banner hidden">
+        <div class="upgrade-banner-text">
+          <span class="upgrade-icon">🚀</span>
+          <div>
+            <strong>Want to issue certificates?</strong>
+            <p>Upgrade your account to Admin to generate and manage certificates.</p>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="go('profile')">Upgrade to Admin →</button>
+      </div>
+      <div id="dashCertList" class="cert-list-section hidden">
+        <h3>Certificates Issued</h3>
+        <div id="certTable"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE (upgrade + settings) -->
+  <section id="profile" class="section">
+    <div class="container" style="max-width:600px">
+      <div class="page-header">
+        <h2>Profile</h2>
+        <p id="profileSubtitle">Manage your account</p>
+      </div>
+
+      <!-- Account info card -->
+      <div class="auth-card" style="margin-bottom:1.5rem">
+        <h3 class="step-title" style="margin-bottom:1rem"><span class="step-badge">👤</span> Account Info</h3>
+        <div id="profileInfo"></div>
+      </div>
+
+      <!-- FEATURE 4: Upgrade to Admin card — shown only for users -->
+      <div id="upgradeCard" class="auth-card hidden">
+        <h3 class="step-title" style="margin-bottom:0.5rem"><span class="step-badge"
+            style="background:var(--yellow);color:#000">⬆</span> Upgrade to Admin</h3>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem">Becoming an admin lets you generate and
+          issue certificates for your organization.</p>
+        <div id="upgradeError" class="alert alert-error hidden"></div>
+        <div id="upgradeSuccess" class="alert alert-success hidden"></div>
+        <div class="form-group">
+          <label>Organization Name</label>
+          <input type="text" id="upgradeOrg" placeholder="e.g. Tech Conference 2026" />
+        </div>
+        <div class="form-group">
+          <label>Confirm Your Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="upgradePassword" placeholder="Enter your current password" />
+            <button type="button" class="pw-toggle" onclick="togglePassword('upgradePassword', this)"
+              tabindex="-1"></button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="upgradeToAdmin()">🚀 Upgrade to Admin</button>
+      </div>
+
+      <!-- Already admin message -->
+      <div id="alreadyAdminCard" class="auth-card hidden" style="text-align:center;padding:2rem">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem"></div>
+        <h3 style="font-family:var(--font-head);margin-bottom:0.5rem">You're an Admin</h3>
+        <p style="font-size:0.8rem;color:var(--muted)">You already have admin privileges and can generate certificates.
+        </p>
+        <button class="btn btn-primary" style="margin-top:1.25rem" onclick="go('generate')"> Generate
+          Certificate</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENERATE -->
+  <section id="generate" class="section">
+    <div class="container">
+      <div class="page-header">
+        <h2>Generate Certificate</h2>
+        <p>Design and issue tamper-proof certificates</p>
+      </div>
+
+      <!-- FEATURE 5: Single vs Bulk mode toggle -->
+      <div class="gen-mode-tabs">
+        <button class="gen-mode-tab active" id="tabSingle" onclick="switchGenMode('single')"> Single
+          Certificate</button>
+        <button class="gen-mode-tab" id="tabBulk" onclick="switchGenMode('bulk')"> Bulk Generate</button>
+      </div>
+
+      <!-- ── SINGLE MODE ── -->
+      <div id="singleMode">
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">1</span> Certificate Details</h3>
+          <div class="auth-card gen-card">
+            <div id="generateError" class="alert alert-error hidden"></div>
+            <div class="form-group">
+              <label>Certificate / Award Title</label>
+              <input type="text" id="certName" placeholder="e.g. Certificate of Excellence in AI"
+                oninput="updatePreview()" />
+            </div>
+            <div class="form-group">
+              <label>Recipient Name <span style="color:var(--muted);font-size:0.7rem">(optional)</span></label>
+              <input type="text" id="certRecipient" placeholder="e.g. John Smith" oninput="updatePreview()" />
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">2</span> Choose Template</h3>
+          <div class="template-grid">
+            <div class="template-card selected" data-tpl="classic" onclick="selectTemplate('classic')">
+              <div class="tpl-preview tpl-classic">
+                <div class="tpl-inner">
+                  <div class="tpl-badge-text">CERTIFICATE</div>
+                  <div class="tpl-deco-line"></div>
+                  <div class="tpl-name-block"></div>
+                </div>
+              </div>
+              <span class="tpl-name">Classic Gold</span>
+            </div>
+            <div class="template-card" data-tpl="cyber" onclick="selectTemplate('cyber')">
+              <div class="tpl-preview tpl-cyber">
+                <div class="tpl-inner">
+                  <div class="tpl-badge-text">CERTIFICATE</div>
+                  <div class="tpl-deco-line"></div>
+                  <div class="tpl-name-block"></div>
+                </div>
+              </div>
+              <span class="tpl-name">Cyber Blue</span>
+            </div>
+            <div class="template-card" data-tpl="royal" onclick="selectTemplate('royal')">
+              <div class="tpl-preview tpl-royal">
+                <div class="tpl-inner">
+                  <div class="tpl-badge-text">CERTIFICATE</div>
+                  <div class="tpl-deco-line"></div>
+                  <div class="tpl-name-block"></div>
+                </div>
+              </div>
+              <span class="tpl-name">Royal Purple</span>
+            </div>
+            <div class="template-card" data-tpl="nature" onclick="selectTemplate('nature')">
+              <div class="tpl-preview tpl-nature">
+                <div class="tpl-inner">
+                  <div class="tpl-badge-text">CERTIFICATE</div>
+                  <div class="tpl-deco-line"></div>
+                  <div class="tpl-name-block"></div>
+                </div>
+              </div>
+              <span class="tpl-name">Nature Green</span>
+            </div>
+            <div class="template-card" data-tpl="fire" onclick="selectTemplate('fire')">
+              <div class="tpl-preview tpl-fire">
+                <div class="tpl-inner">
+                  <div class="tpl-badge-text">CERTIFICATE</div>
+                  <div class="tpl-deco-line"></div>
+                  <div class="tpl-name-block"></div>
+                </div>
+              </div>
+              <span class="tpl-name">Fire Red</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">3</span> Customize Text Style</h3>
+          <div class="auth-card gen-card">
+            <div class="customizer-row">
+              <div class="form-group">
+                <label>Title Font</label>
+                <select id="custFont" onchange="updatePreview()">
+                  <option value="Syne">Syne (Modern)</option>
+                  <option value="Playfair Display">Playfair (Elegant)</option>
+                  <option value="Rajdhani">Rajdhani (Bold)</option>
+                  <option value="Space Mono">Space Mono (Tech)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Title Color</label>
+                <div class="color-row">
+                  <input type="color" id="custTitleColor" value="#ffffff" oninput="updatePreview()"
+                    class="color-input" />
+                  <span id="custTitleColorHex" class="color-hex">#ffffff</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Accent Color</label>
+                <div class="color-row">
+                  <input type="color" id="custAccentColor" value="#00e5ff" oninput="updatePreview()"
+                    class="color-input" />
+                  <span id="custAccentColorHex" class="color-hex">#00e5ff</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">4</span> Live Preview</h3>
+          <div id="liveCertPreview" class="live-preview-box"></div>
+        </div>
+
+        <div class="gen-step">
+          <button class="btn btn-primary" style="min-width:260px" onclick="generateCert()"> Generate &amp; Save
+            Certificate</button>
+        </div>
+
+        <div id="certResult" class="cert-result-wrap hidden">
+          <h3 class="step-title" style="color:var(--green)"><span class="step-badge"
+              style="background:var(--green);color:#000">✓</span> Certificate Generated!</h3>
+          <div id="certPreviewContainer"></div>
+          <div class="cert-hash-box">
+            <span class="hash-label">SHA-256 Hash</span>
+            <code id="prevHash"></code>
+          </div>
+          <div class="cert-actions">
+            <button class="btn btn-outline" onclick="printCert()"> Print</button>
+            <button class="btn btn-outline" onclick="copyCertId()"> Copy ID</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BULK MODE ── -->
+      <div id="bulkMode" class="hidden">
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">1</span> Certificate Title</h3>
+          <div class="auth-card gen-card">
+            <div id="bulkError" class="alert alert-error hidden"></div>
+            <div class="form-group">
+              <label>Award / Certificate Title</label>
+              <input type="text" id="bulkTitle" placeholder="e.g. Certificate of Participation — Hackathon 2026" />
+            </div>
+            <p style="font-size:0.75rem;color:var(--muted)">Each generated certificate will be titled: <em>"[Title] —
+                [Recipient Name]"</em></p>
+          </div>
+        </div>
+
+        <div class="gen-step">
+          <h3 class="step-title"><span class="step-badge">2</span> Add Recipient Names</h3>
+          <div class="auth-card gen-card">
+
+            <!-- Sub-tabs: manual / file upload -->
+            <div class="bulk-input-tabs">
+              <button class="bulk-itab active" id="bTabManual" onclick="switchBulkInputTab('manual')"> Type
+                Names</button>
+              <button class="bulk-itab" id="bTabFile" onclick="switchBulkInputTab('file')"> Upload File</button>
+            </div>
+
+            <!-- Manual entry -->
+            <div id="bulkManualPanel">
+              <div class="form-group" style="margin-top:1rem">
+                <label>Recipient Names <span style="color:var(--muted);font-size:0.7rem">(one per line)</span></label>
+                <textarea id="bulkNames" rows="8" placeholder="Alice Johnson&#10;Bob Smith&#10;Charlie Brown&#10;..."
+                  class="bulk-textarea"></textarea>
+              </div>
+            </div>
+
+            <!-- File upload -->
+            <div id="bulkFilePanel" class="hidden" style="margin-top:1rem">
+              <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('bulkFileInput').click()">
+                <div class="file-drop-icon">📎</div>
+                <p class="file-drop-label">Click to upload or drag & drop</p>
+                <p class="file-drop-sub">Supports: .csv, .xlsx, .xls, .txt</p>
+                <input type="file" id="bulkFileInput" accept=".csv,.xlsx,.xls,.txt" style="display:none"
+                  onchange="handleBulkFile(this)" />
+              </div>
+              <div id="fileParseStatus" class="file-parse-status hidden"></div>
+              <!-- Preview of parsed names -->
+              <div id="parsedNamesPreview" class="hidden" style="margin-top:1rem">
+                <label
+                  style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">Parsed
+                  Names Preview</label>
+                <div id="parsedNamesList" class="parsed-names-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-step">
+          <div class="bulk-count-row">
+            <div id="bulkCountBadge" class="bulk-count-badge">0 recipients</div>
+            <button class="btn btn-primary" onclick="generateBulk()"> Generate All Certificates</button>
+          </div>
+        </div>
+
+        <!-- Bulk results -->
+        <div id="bulkResult" class="cert-result-wrap hidden">
+          <h3 class="step-title" style="color:var(--green)"><span class="step-badge"
+              style="background:var(--green);color:#000">✓</span> Bulk Generation Complete!</h3>
+          <div id="bulkResultStats" class="bulk-result-stats"></div>
+          <div id="bulkCertList" class="bulk-cert-list"></div>
+          <div class="cert-actions" style="margin-top:1rem">
+            <button class="btn btn-outline" onclick="downloadBulkCSV()">Download IDs as CSV</button>
+            <button class="btn btn-outline" onclick="go('dashboard')"> View Dashboard</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- VERIFY -->
+  <section id="verify" class="section">
+    <div class="container">
+      <div class="page-header">
+        <h2>Verify Certificate</h2>
+        <p>Enter a Certificate ID manually or scan the QR code with your camera</p>
+      </div>
+      <div class="verify-layout">
+        <div class="verify-input-col">
+          <div class="verify-tabs">
+            <button class="vtab active" id="tabManual" onclick="switchVerifyTab('manual')"> Enter ID</button>
+            <button class="vtab" id="tabScan" onclick="switchVerifyTab('scan')">Scan QR</button>
+          </div>
+          <div id="verifyManualPanel" class="auth-card verify-card">
+            <div class="form-group">
+              <label>Certificate ID</label>
+              <input type="text" id="verifyCertId" placeholder="CERT-123456" />
+            </div>
+            <button class="btn btn-primary btn-full" onclick="verifyCert()"> Verify Now</button>
+          </div>
+          <div id="verifyScanPanel" class="auth-card verify-card hidden">
+            <p class="scan-hint"> Allow camera access and point at the QR code on the certificate</p>
+            <div id="qrScannerBox" class="qr-scanner-container"></div>
+            <div id="scanStatus" class="scan-status"></div>
+            <div class="scan-btn-row">
+              <button class="btn btn-primary btn-full" id="startScanBtn" onclick="startScanner()"> Start
+                Camera</button>
+              <button class="btn btn-danger btn-full hidden" id="stopScanBtn" onclick="stopScanner()"> Stop
+                Camera</button>
+            </div>
+          </div>
+        </div>
+        <div id="verifyResult" class="verify-result hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p> CertiChain &nbsp;·&nbsp; Hackathon Project &nbsp;·&nbsp; Verifiable Credentials</p>
+  </footer>
+
+  <!-- Print Isolation Container -->
+  <div id="printSection"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

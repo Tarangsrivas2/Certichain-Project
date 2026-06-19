@@ -1,4 +1,4 @@
-const API = 'http://localhost:5001/api';
+const API_URL = "https://certichain-project-lrpo.onrender.com";
 
 // ── State ──────────────────────────────────────────────────
 let currentUser = JSON.parse(localStorage.getItem('cc_user') || 'null');

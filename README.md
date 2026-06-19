@@ -2,7 +2,7 @@
 ### Secure • Tamper-Proof • Instantly Verifiable
 
 ## Live Demo: 
-https://certi-chain-project.vercel.app/
+https://certi-chain-project.vercel.app
 
 ## Overview
 CertiChain is a full-stack web application designed to eliminate certificate fraud through secure issuance and instant verification. It leverages cryptographic hashing and QR codes to ensure authenticity, integrity, and fast validation of digital certificates.
@@ -39,9 +39,9 @@ The system provides a reliable way for organizations to issue certificates and f
 3. Smooth navigation and interaction
 
 ## Problem Statement
-Certificate fraud is a widespread issue:
-Fake certificates can be easily created
-Verification processes are slow and manual
+Certificate fraud is a widespread issue,
+Fake certificates can be easily created,
+Verification processes are slow and manual,
 Lack of a universal validation system
 
 CertiChain addresses these problems by providing a secure, fast, and automated verification system using cryptographic techniques.
